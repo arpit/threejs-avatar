@@ -26,10 +26,12 @@ $(function(){
 		controls = new THREE.OrbitControls( camera, renderer.domElement );
 		controls.addEventListener( 'change', render );
 
-		camera.position.x = 200;
-		camera.position.y = 200;
-		camera.position.z = 200;
+		camera.position.x = 50;
+		camera.position.y = 50;
+		camera.position.z = 50;
 		camera.lookAt(scene.position);
+
+
 
 		/*datGUI controls object*/
 		guiControls = new function(){
@@ -37,6 +39,9 @@ $(function(){
             this.Bone_1 = 0.0;
             this.Bone_2 = 0.0;
             this.Bone_3 = 0.0;
+            this.Bone_4 = 0.0;
+            this.Bone_5 = 0.0;
+            this.Bone_6 = 0.0;
 
 			this.rotationX  = 0.0;
 			this.rotationY  = 0.0;
@@ -58,9 +63,9 @@ $(function(){
 			this.shadowBias=0.00;
 			this.shadowDarkness=0.11;
 
-            this.scene = function(){
-                console.log(scene);
-            };
+      this.scene = function(){
+          console.log("Scene", scene);
+      };
 
 		}
 
@@ -71,24 +76,24 @@ $(function(){
         scene.fog = new THREE.Fog( 0xffff90, .01, 500 );
 
 		/*adds spot light with starting parameters*/
-		spotLight = new THREE.SpotLight(0xffffff);
-		spotLight.castShadow = true;
-		spotLight.position.set (20, 35, 40);
-		spotLight.intensity = guiControls.intensity;
-		spotLight.distance = guiControls.distance;
-		spotLight.angle = guiControls.angle;
-		spotLight.exponent = guiControls.exponent;
-		spotLight.shadowCameraNear = guiControls.shadowCameraNear;
-		spotLight.shadowCameraFar = guiControls.shadowCameraFar;
-		spotLight.shadowCameraFov = guiControls.shadowCameraFov;
-		spotLight.shadowCameraVisible = guiControls.shadowCameraVisible;
-		spotLight.shadowBias = guiControls.shadowBias;
-		spotLight.shadowDarkness = guiControls.shadowDarkness;
-		scene.add(spotLight);
+		// spotLight = new THREE.SpotLight(0xffffff);
+		// spotLight.castShadow = true;
+		// spotLight.position.set (20, 35, 40);
+		// spotLight.intensity = guiControls.intensity;
+		// spotLight.distance = guiControls.distance;
+		// spotLight.angle = guiControls.angle;
+		// spotLight.exponent = guiControls.exponent;
+		// spotLight.shadowCameraNear = guiControls.shadowCameraNear;
+		// spotLight.shadowCameraFar = guiControls.shadowCameraFar;
+		// spotLight.shadowCameraFov = guiControls.shadowCameraFov;
+		// spotLight.shadowCameraVisible = guiControls.shadowCameraVisible;
+		// spotLight.shadowBias = guiControls.shadowBias;
+		// spotLight.shadowDarkness = guiControls.shadowDarkness;
+		//scene.add(spotLight);
 
         /*add loader call add model function*/
         loader = new THREE.JSONLoader();
-        loader.load( './fandango.json', addModel );
+        loader.load( './avatar5.json', addModel );
 
 
 		/*adds controls to scene*/
@@ -102,6 +107,9 @@ $(function(){
 		cfolder.add(guiControls, 'Bone_1',-3.14, 3.14);
 		cfolder.add(guiControls, 'Bone_2',-3.14, 3.14);
 		cfolder.add(guiControls, 'Bone_3',-3.14, 3.14);
+    cfolder.add(guiControls, 'Bone_4',-3.14, 3.14);
+    cfolder.add(guiControls, 'Bone_5',-3.14, 3.14);
+    cfolder.add(guiControls, 'Bone_6',-3.14, 3.14);
 
 
 
@@ -109,7 +117,7 @@ $(function(){
 		lfolder.add(guiControls, 'lightX',-60,400);
 		lfolder.add(guiControls, 'lightY',0,400);
 		lfolder.add(guiControls, 'lightZ',-60,400);
-
+    /*
 		lfolder.add(guiControls, 'intensity',0.01, 5).onChange(function(value){
 			spotLight.intensity = value;
 		});
@@ -146,6 +154,7 @@ $(function(){
 			spotLight.shadowDarkness = value;
 			spotLight.shadowCamera.updateProjectionMatrix();
 		});
+    */
 		datGUI.close();
 		$("#webGL-container").append(renderer.domElement);
 		/*stats*/
@@ -159,29 +168,32 @@ $(function(){
     var helpset = [];
     var scaleVal = 3;
     function addModel( geometry,  materials ){
-        for (var i = 0;i < 800; i++){
+        for (var i = 0;i < 1; i++){
             materials[0].skinning = true;
 
-            var cs = scaleVal * Math.random();
+            var cs = 1.5 //scaleVal * Math.random();
 
             set[i]= new THREE.SkinnedMesh( geometry, new THREE.MeshFaceMaterial(materials) );
-            set[i].position.set(Math.random()*250,Math.random()*250,Math.random()*250);
-            set[i].scale.set (cs, cs, cs);
+            set[i].position.set(1,1,1);
+
+            console.log(set[i].position)
+
+            set[i].scale.set (1, 1, 1);
             set[i].castShadow = true;
             set[i].receiveShadow = true;
 
             scene.add(set[i]);
             helpset[i] = new THREE.SkeletonHelper(set[i]);
-            //scene.add(helpset[i]);
+            scene.add(helpset[i]);
 
         }
 
     }
 
 	function render() {
-		spotLight.position.x = guiControls.lightX;
-		spotLight.position.y = guiControls.lightY;
-		spotLight.position.z = guiControls.lightZ;
+		// spotLight.position.x = guiControls.lightX;
+		// spotLight.position.y = guiControls.lightY;
+		// spotLight.position.z = guiControls.lightZ;
 
         scene.traverse(function(child){
             if (child instanceof THREE.SkinnedMesh){
@@ -192,9 +204,12 @@ $(function(){
                 child.skeleton.bones[1].rotation.z = guiControls.Bone_1;
                 child.skeleton.bones[2].rotation.z = guiControls.Bone_2;
                 child.skeleton.bones[3].rotation.z = guiControls.Bone_3;
+                child.skeleton.bones[4].rotation.z = guiControls.Bone_4;
+                child.skeleton.bones[5].rotation.z = guiControls.Bone_5;
+                child.skeleton.bones[6].rotation.z = guiControls.Bone_6;
             }
             else if  (child instanceof THREE.SkeletonHelper){
-                child.update();
+                //child.update();
             }
         });
 
