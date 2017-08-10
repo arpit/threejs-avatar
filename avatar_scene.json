@@ -17,7 +17,7 @@
         "type":"MeshPhongMaterial",
         "vertexColors":0,
         "skinning":true,
-        "uuid":"91DF018B-25F2-4E9C-A371-BCE73D736716",
+        "uuid":"68B09278-2DB1-41B1-811B-A27CEE4D4DFC",
         "shininess":50,
         "depthTest":true,
         "blending":1,
@@ -30,7 +30,7 @@
         "type":"MeshPhongMaterial",
         "vertexColors":0,
         "skinning":true,
-        "uuid":"B50E5015-ADAD-4070-B02B-5BFE17325552",
+        "uuid":"B85C23CF-BB01-4100-82B7-B59064987FA4",
         "shininess":50,
         "depthTest":true,
         "blending":1,
@@ -43,7 +43,7 @@
         "type":"MeshPhongMaterial",
         "vertexColors":0,
         "skinning":true,
-        "uuid":"EA8EE69F-423E-4CE7-9B67-3FA1EE745575",
+        "uuid":"EE356EE9-1019-43E1-92D1-66A4D8E9EFE5",
         "shininess":50,
         "depthTest":true,
         "blending":1,
@@ -56,7 +56,7 @@
         "type":"MeshPhongMaterial",
         "vertexColors":0,
         "skinning":true,
-        "uuid":"E2327C1F-8B05-478F-80AB-51D0688C4931",
+        "uuid":"7CE328BF-8B34-46D0-BE3D-60BCFCD58BB9",
         "shininess":50,
         "depthTest":true,
         "blending":1,
@@ -195,23 +195,23 @@
             "influencesPerVertex":2,
             "uvs":[]
         },
-        "uuid":"F1AFFAAC-C3B3-47BC-9BA4-21B9B6FD3DA0",
-        "name":"Cube.001Geometry.3",
+        "uuid":"75E418A8-7275-4E11-90D2-330C10014988",
+        "name":"Cube.001Geometry.4",
         "type":"Geometry"
     }],
     "object":{
         "children":[{
             "name":"avatar",
-            "uuid":"4E8E5A2D-99DB-47EF-8478-D9EB0DDAD563",
+            "uuid":"DA8573C2-3B13-4C32-B2F6-75E72996967E",
             "matrix":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
             "visible":true,
             "type":"Mesh",
-            "material":["EA8EE69F-423E-4CE7-9B67-3FA1EE745575","E2327C1F-8B05-478F-80AB-51D0688C4931","B50E5015-ADAD-4070-B02B-5BFE17325552","91DF018B-25F2-4E9C-A371-BCE73D736716"],
+            "material":["EE356EE9-1019-43E1-92D1-66A4D8E9EFE5","7CE328BF-8B34-46D0-BE3D-60BCFCD58BB9","B85C23CF-BB01-4100-82B7-B59064987FA4","68B09278-2DB1-41B1-811B-A27CEE4D4DFC"],
             "castShadow":true,
             "receiveShadow":true,
-            "geometry":"F1AFFAAC-C3B3-47BC-9BA4-21B9B6FD3DA0"
+            "geometry":"75E418A8-7275-4E11-90D2-330C10014988"
         }],
-        "uuid":"2583AEC2-0DD3-4605-92DD-EF8C1A3AFCE7",
+        "uuid":"4DAF4F27-B76B-4D42-9D59-E8F6E9FCE70F",
         "matrix":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
         "type":"Scene"
     }
