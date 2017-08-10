@@ -26,8 +26,8 @@ $(function(){
 		controls = new THREE.OrbitControls( camera, renderer.domElement );
 		controls.addEventListener( 'change', render );
 
-		camera.position.x = 1.5;
-		camera.position.y = 1.5;
+		camera.position.x = 0;
+		camera.position.y = 1;
 		camera.position.z = 1.5;
 		camera.lookAt(scene.position);
 
@@ -52,9 +52,11 @@ $(function(){
       spotLight = getSpotlight(datGUI, guiControls)
       scene.add(spotLight)
     }
-    loader = new THREE.JSONLoader();
+    loader = new THREE.ObjectLoader();
 
-    loader.load( './avatar.json', addModel );
+    loader.load( './avatar_scene.json', (obj)=>{
+      scene.add(obj)
+    });
     datGUI.add(guiControls, "scene");
 		datGUI.close();
 
@@ -69,6 +71,7 @@ $(function(){
 	}
     var set = [];
     var helpset = [];
+
 
     function addModel( geometry,  materials ){
         for (var i = 0;i < 1; i++){
@@ -99,7 +102,7 @@ $(function(){
     scene.traverse(function(child){
         if (child instanceof THREE.SkinnedMesh){
 
-            child.rotation.y += .01;
+            //child.rotation.y += .01;
 
             child.skeleton.bones[0].rotation.z = guiControls.rotation.Bone_0;
             child.skeleton.bones[1].rotation.z = guiControls.rotation.Bone_1;
