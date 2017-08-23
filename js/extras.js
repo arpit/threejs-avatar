@@ -103,3 +103,24 @@ function configureRotation(datGUI, guiControls){
   cfolder.add(guiControls.rotation, 'Bone_5',-3.14, 3.14);
   cfolder.add(guiControls.rotation, 'Bone_6',-3.14, 3.14);
 }
+
+function configureTranslation(datGUI, guiControls){
+  guiControls.translation = new function(){
+    this.upperarm_L_x = 0.01;
+    this.upperarm_L_y = 0.01;
+    this.upperarm_L_z = 0.01;
+
+    this.lowerarm_L_x = 0.01;
+    this.lowerarm_L_y = 0.01;
+    this.lowerarm_L_z = 0.01;
+  }
+
+  var cfolder = datGUI.addFolder('Translation Left Arm');
+  cfolder.add(guiControls.translation, 'upperarm_L_x',-2.0, 2.0);
+  cfolder.add(guiControls.translation, 'upperarm_L_y',-2.0, 2.0);
+  cfolder.add(guiControls.translation, 'upperarm_L_z',-2, 2);
+  cfolder.add(guiControls.translation, 'lowerarm_L_x',-2, 2);
+  cfolder.add(guiControls.translation, 'lowerarm_L_y',-2, 2);
+  cfolder.add(guiControls.translation, 'lowerarm_L_z',-2, 2);
+
+}

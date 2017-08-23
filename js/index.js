@@ -42,6 +42,7 @@ $(function(){
 		/*datGUI controls object*/
 		guiControls = new function(){
       configureRotation(datGUI, this)
+      //configureTranslation(datGUI, this)
       this.scene = function(){
           console.log("Scene", scene);
       };
@@ -54,7 +55,7 @@ $(function(){
     }
     loader = new THREE.ObjectLoader();
 
-    loader.load( './avatar_scene.json', (obj)=>{
+    loader.load( './avatar_flipped_monochrome.json', (obj)=>{
       scene.add(obj)
     });
     datGUI.add(guiControls, "scene");
@@ -69,28 +70,38 @@ $(function(){
 		stats.domElement.style.top = '0px';
 		$("#webGL-container").append( stats.domElement );
 	}
-    var set = [];
-    var helpset = [];
+
+  function addMarker(x,y,z){
+    var geometry = new THREE.BoxGeometry( 0.2, .2, .2 );
+    var material = new THREE.MeshBasicMaterial( { color: "#ff0000" } );
+    var cube = new THREE.Mesh( geometry, material );
+    scene.add( cube );
+    cube.position.x = x;
+    cube.position.y = y;
+    cube.position.z = z;
+  }
+
+  var set = [];
+  var helpset = [];
+
+  function addModel( geometry,  materials ){
+      for (var i = 0;i < 1; i++){
+        materials[0].skinning = true;
+
+        set[i]= new THREE.SkinnedMesh( geometry, new THREE.MeshFaceMaterial(materials) );
+        set[i].position.set(-1,-1,-1);
 
 
-    function addModel( geometry,  materials ){
-        for (var i = 0;i < 1; i++){
-          materials[0].skinning = true;
 
-          set[i]= new THREE.SkinnedMesh( geometry, new THREE.MeshFaceMaterial(materials) );
-          set[i].position.set(0,0,0);
+        set[i].scale.set (1, 1, 1);
+        set[i].castShadow = true;
+        set[i].receiveShadow = true;
 
-          console.log(set[i].position)
-
-          set[i].scale.set (1, 1, 1);
-          set[i].castShadow = true;
-          set[i].receiveShadow = true;
-
-          scene.add(set[i]);
-          helpset[i] = new THREE.SkeletonHelper(set[i]);
-          scene.add(helpset[i]);
-        }
-    }
+        scene.add(set[i]);
+        helpset[i] = new THREE.SkeletonHelper(set[i]);
+        scene.add(helpset[i]);
+      }
+  }
 
 	function render() {
     if(SHOW_SPOTLIGHT){
@@ -100,9 +111,30 @@ $(function(){
     }
 
     scene.traverse(function(child){
+
+
         if (child instanceof THREE.SkinnedMesh){
 
             //child.rotation.y += .01;
+            if(!this.upperArmL || !this.lowerArmL){
+              for(var i=0; i < child.skeleton.bones.length; i++){
+                var bone = child.skeleton.bones[i];
+                switch(bone.name){
+                  case("UpperArm.L"): upperArmL = bone; break;
+                  case("LowerArm.L"): lowerArmL = bone; break;
+                }
+              }
+            }
+
+            console.log("Lower arm position ", lowerArmL.position)
+
+            // lowerArmL.position.x = guiControls.translation.lowerarm_L_x
+            // lowerArmL.position.y = guiControls.translation.lowerarm_L_y
+            // lowerArmL.position.z = guiControls.translation.lowerarm_L_z
+            //
+            // upperArmL.position.x = guiControls.translation.upperarm_L_x
+            // upperArmL.position.y = guiControls.translation.upperarm_L_y
+            // upperArmL.position.z = guiControls.translation.upperarm_L_z
 
             child.skeleton.bones[0].rotation.z = guiControls.rotation.Bone_0;
             child.skeleton.bones[1].rotation.z = guiControls.rotation.Bone_1;
@@ -127,6 +159,7 @@ $(function(){
 
     init();
     animate();
+
 
     $(window).resize(function(){
         SCREEN_WIDTH = window.innerWidth;
