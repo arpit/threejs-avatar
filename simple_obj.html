@@ -11,6 +11,7 @@
   <script src='https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/libs/stats.min.js'></script>
   <script src='https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/ColladaLoader.js'></script>
   <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
+  <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.11.2/dist/aframe-extras.min.js"></script>
 </head>
 
 <body>
@@ -28,7 +29,10 @@
 	<body>
 
     <a-scene>
-      <a-entity object-model="src: exports/simple_cube"/>
+      <a-entity object-model="src: exports/simple_cube.json"/>
+
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+
     </a-scene>
 
 

@@ -116,11 +116,11 @@ function configureTranslation(datGUI, guiControls){
   }
 
   var cfolder = datGUI.addFolder('Translation Left Arm');
-  cfolder.add(guiControls.translation, 'upperarm_L_x',-2.0, 2.0);
-  cfolder.add(guiControls.translation, 'upperarm_L_y',-2.0, 2.0);
-  cfolder.add(guiControls.translation, 'upperarm_L_z',-2, 2);
-  cfolder.add(guiControls.translation, 'lowerarm_L_x',-2, 2);
-  cfolder.add(guiControls.translation, 'lowerarm_L_y',-2, 2);
-  cfolder.add(guiControls.translation, 'lowerarm_L_z',-2, 2);
+  cfolder.add(guiControls.translation, 'upperarm_L_x',-1.0, 1.0);
+  cfolder.add(guiControls.translation, 'upperarm_L_y',-1.0, 1.0);
+  cfolder.add(guiControls.translation, 'upperarm_L_z',-1, 1);
+  cfolder.add(guiControls.translation, 'lowerarm_L_x',-1, 1);
+  cfolder.add(guiControls.translation, 'lowerarm_L_y',-1, 1);
+  cfolder.add(guiControls.translation, 'lowerarm_L_z',-1, 1);
 
 }
