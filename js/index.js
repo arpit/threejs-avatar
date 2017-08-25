@@ -1,10 +1,70 @@
+
+var positions;
+var currentIndex = 0;
+function onNextClicked(){
+  currentIndex++;
+  showPositionsAtIndex(currentIndex)
+}
+
+function showPositionsAtIndex(index){
+  console.log("showing positions at "+index)
+
+  var colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xff0000]
+
+
+  var i = 0;
+  for(var a in positions[index]){
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push( positions[index][a].start);
+    geometry.vertices.push( positions[index][a].end);
+    console.log("segment start: ", positions[index][a].start)
+    console.log("segment end: ", positions[index][a].end)
+    console.log("Color: "+colors[i])
+    var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: colors[i], linewidth:5,   opacity:  1 } ) );
+    scene.add( line );
+    i++;
+  }
+
+  // var texture = new THREE.Texture( generateTexture() );
+	// texture.needsUpdate = true;
+  //
+  // var line = new THREE.Line( geometry, new THREE.MeshBasicMaterial( { map: texture, overdraw:  0.5} ) );
+
+}
+
+function generateTexture() {
+
+	var size = 64;
+
+	// create canvas
+	canvas = document.createElement( 'canvas' );
+	canvas.width = size;
+	canvas.height = size;
+
+	// get context
+	var context = canvas.getContext( '2d' );
+
+	// draw gradient
+	context.rect( 0, 0, size, size );
+	var gradient = context.createLinearGradient( 0, 0, size, size );
+	gradient.addColorStop(0, '#ff0000'); // light blue
+	gradient.addColorStop(1, '#0000ff'); // dark blue
+	context.fillStyle = gradient;
+	context.fill();
+
+	return canvas;
+
+}
+
+var scene, camera, renderer;
+
+
 $(function(){
 
   let SHOW_SPOTLIGHT = true;
   var spotLight
 
     /*global variables*/
-	var scene, camera, renderer;
 	var controls, guiControls, datGUI;
 	var stats;
 	var spotLight, hemi;
@@ -72,15 +132,19 @@ $(function(){
 
 		$("#webGL-container").append(renderer.domElement);
 		/*stats*/
-		stats = new Stats();
-		stats.domElement.style.position = 'absolute';
-		stats.domElement.style.left = '0px';
-		stats.domElement.style.top = '0px';
-		$("#webGL-container").append( stats.domElement );
+
 
     //addMarker(0,0,0)
 
 	}
+
+  function createStats(){
+    stats = new Stats();
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.left = '0px';
+		stats.domElement.style.top = '0px';
+		$("#webGL-container").append( stats.domElement );
+  }
 
   function markupAvatar(){
     scene.traverse(function(child){
@@ -101,8 +165,8 @@ $(function(){
 
             console.log("UpperArm", this.upperArmL)
 
-            addMarker("green",this.upperArmLRoot.x, this.upperArmLRoot.y, this.upperArmLRoot.z)
-            addMarker("blue",this.lowerArmLRoot.x, this.lowerArmLRoot.y, this.lowerArmLRoot.z)
+            //addMarker("green",this.upperArmLRoot.x, this.upperArmLRoot.y, this.upperArmLRoot.z)
+            //addMarker("blue",this.lowerArmLRoot.x, this.lowerArmLRoot.y, this.lowerArmLRoot.z)
 
           }
 
@@ -180,15 +244,15 @@ $(function(){
 
           //console.log("Upperarm original x: "+this.upperArmLRoot.x)
 
-          let change =   this.upperArmLRoot.x  - guiControls.translation.upperarm_L_x
-          this.upperArmL.position.x = change
-
-          this.upperArmL.position.y = guiControls.translation.upperarm_L_y - upperArmLRoot.y
-          this.upperArmL.position.z = guiControls.translation.upperarm_L_z - upperArmLRoot.z
-
-          this.lowerArmL.position.x = guiControls.translation.lowerarm_L_x - this.lowerArmLRoot.x
-          this.lowerArmL.position.y = guiControls.translation.lowerarm_L_y - this.lowerArmLRoot.y
-          this.lowerArmL.position.z = guiControls.translation.lowerarm_L_z - this.lowerArmLRoot.z
+          // let change =   this.upperArmLRoot.x  - guiControls.translation.upperarm_L_x
+          // this.upperArmL.position.x = change
+          //
+          // this.upperArmL.position.y = guiControls.translation.upperarm_L_y - upperArmLRoot.y
+          // this.upperArmL.position.z = guiControls.translation.upperarm_L_z - upperArmLRoot.z
+          //
+          // this.lowerArmL.position.x = guiControls.translation.lowerarm_L_x - this.lowerArmLRoot.x
+          // this.lowerArmL.position.y = guiControls.translation.lowerarm_L_y - this.lowerArmLRoot.y
+          // this.lowerArmL.position.z = guiControls.translation.lowerarm_L_z - this.lowerArmLRoot.z
 
 
         //}
@@ -198,12 +262,28 @@ $(function(){
 	function animate(){
 		requestAnimationFrame(animate);
 		render();
-		stats.update();
+    if(stats){
+      stats.update();
+    }
+
 		renderer.render(scene, camera);
 	}
 
+
+  function showMovements(){
+    loadMovement(function(data){
+      positions = data;
+      currentIndex = 0
+      showPositionsAtIndex(currentIndex)
+    });
+  }
+
     init();
+    showMovements();
+
     animate();
+
+
 
 
     $(window).resize(function(){
