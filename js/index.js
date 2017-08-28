@@ -116,7 +116,7 @@ $(function(){
     }
     loader = new THREE.ObjectLoader();
 
-    loader.load( './avatar_flipped_monochrome.json', (obj)=>{
+    loader.load( './exports/avatar_flipped_chestbones.json', (obj)=>{
       obj.name = "avatar"
 
       var helper = new THREE.SkeletonHelper( obj );
