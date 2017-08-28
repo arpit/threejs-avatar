@@ -1,12 +1,102 @@
 
 var positions;
 var currentIndex = 0;
+
+var positionIndex = 0
+
+
+// function addAvatarMarker(color, bone){
+//   bone.object3d.localToWorld
+// }
+
+var markers = []
+
+function clearMarkers(){
+  while(markers.length > 0){
+    let m = markers.pop()
+    m.parent.remove(m)
+  }
+}
+
+function addMarkerAt(color, vec, parent){
+  addMarker(color, vec.x, vec.y, vec.z, parent)
+}
+
+function addMarker(color, x,y,z, parent){
+  var geometry = new THREE.BoxGeometry( .01, .01, 1 );
+  var material = new THREE.MeshBasicMaterial( { color: color } );
+  var cube = new THREE.Mesh( geometry, material );
+  if(!parent){
+    parent = scene.getObjectByName("avatar")
+  }
+  parent.add( cube );
+
+  cube.position.x = x;
+  cube.position.y = y;
+  cube.position.z = z;
+  markers.push(cube)
+}
+
+
+function setPosition(arm, pv){
+  var avatar = scene.getObjectByName("avatar")
+  var g = avatar.localToWorld(new THREE.Vector3(pv.start.x, pv.start.y, pv.start.z))
+  // //
+  // // // var g = avatar.localToWorld(new THREE.Vector3(pv.end.x - pv.start.x,
+  // // //                   pv.end.y - pv.start.y, pv.end.z-pv.start.y))
+  // //
+  // // //var v = new THREE.Vector3( pv.start.x, pv.start.y, pv.start.z )
+  var local = arm.worldToLocal(new THREE.Vector3(g.x, g.y, g.z))
+  // // console.log(arm.parent)
+  // // //arm.parent = null;
+  // // console.log(arm.parent)
+  // // arm.matrixWorldNeedsUpdate = true
+  //
+  arm.position.x = local.x
+   arm.position.y = local.y
+   arm.position.z = local.z
+
+  addMarkerAt("red",g, avatar)
+  // //
+  // arm.matrixWorldNeedsUpdate = true
+  //var local = pv.start;
+
+  // arm.position.x = pv.end.x - pv.start.x
+  // arm.position.y = pv.end.y - pv.start.y
+  // arm.position.z = pv.end.z - pv.start.z
+  return local;
+
+  // arm.position.x = pv.start.x
+  // arm.position.y = pv.start.y
+  // arm.position.z = pv.start.z
+
+}
+
+
+function moveAvatarToCurrentPosition(){
+  // var p1 = setPosition(window.collarL, positions[positionIndex]["left_bone_0"])
+  // var p2 = setPosition(window.upperArmL, positions[positionIndex]["left_bone_1"])
+  // var p3 = setPosition(window.lowerArmL, positions[positionIndex]["left_bone_2"])
+
+  // window.collarL.position.x = p1.x
+  // window.collarL.position.x = p1.y
+  // window.collarL.position.x = p1.z
+
+
+
+  //window..position.x = -0.11766968108291041
+
+
+}
+
 function onNextClicked(){
   currentIndex++;
   showPositionsAtIndex(currentIndex)
+  moveAvatarToCurrentPosition()
 }
 
 function showPositionsAtIndex(index){
+  positionIndex = index;
   console.log("showing positions at "+index)
 
   var colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0xff0000]
@@ -24,6 +114,9 @@ function showPositionsAtIndex(index){
     scene.add( line );
     i++;
   }
+
+
+
 
   // var texture = new THREE.Texture( generateTexture() );
 	// texture.needsUpdate = true;
@@ -136,6 +229,8 @@ $(function(){
 
     //addMarker(0,0,0)
 
+    addMarker("red", 0,0,0, scene)
+
 	}
 
   function createStats(){
@@ -150,20 +245,26 @@ $(function(){
     scene.traverse(function(child){
       if (child instanceof THREE.SkinnedMesh){
           //child.rotation.y += .01;
-          if(!this.upperArmL || !this.lowerArmL){
+          if(!window.upperArmL || !window.lowerArmL){
             for(var i=0; i < child.skeleton.bones.length; i++){
               var bone = child.skeleton.bones[i];
+              console.log("Bone name: "+bone.name)
               switch(bone.name){
-                case("UpperArm.L"): this.upperArmL = bone; break;
-                case("LowerArm.L"): this.lowerArmL = bone; break;
+
+                case("UpperArm.L"): window.upperArmL = bone; break;
+                case("LowerArm.L"): window.lowerArmL = bone; break;
+                case("Collar.L"): window.collarL = bone; break;
+                case("Hand.L"): window.handL = bone; break;
               }
             }
             //now
             console.log("setting upperarm root")
-            this.upperArmLRoot = this.upperArmL.position
-            this.lowerArmLRoot = this.lowerArmL.position
+            this.upperArmLRoot = window.upperArmL.position
+            this.lowerArmLRoot = window.lowerArmL.position
 
-            console.log("UpperArm", this.upperArmL)
+            console.log("UpperArm", window.upperArmL)
+
+            showMovements();
 
             //addMarker("green",this.upperArmLRoot.x, this.upperArmLRoot.y, this.upperArmLRoot.z)
             //addMarker("blue",this.lowerArmLRoot.x, this.lowerArmLRoot.y, this.lowerArmLRoot.z)
@@ -174,15 +275,6 @@ $(function(){
     })
   }
 
-  function addMarker(color, x,y,z){
-    var geometry = new THREE.BoxGeometry( .01, .01, 1 );
-    var material = new THREE.MeshBasicMaterial( { color: color } );
-    var cube = new THREE.Mesh( geometry, material );
-    scene.getObjectByName("avatar").add( cube );
-    cube.position.x = x;
-    cube.position.y = y;
-    cube.position.z = z;
-  }
 
   var set = [];
   var helpset = [];
@@ -240,24 +332,43 @@ $(function(){
         if(!this.lowerArmL || !this.upperArmL) return;
 
 
-        //if(!this.oldGUIX || this.oldGUIX != guiControls.translation.upperarm_L_x ){
+        if(!window.oldGUIX || window.oldGUIX != guiControls.translation.upperarm_L_x ){
 
-          //console.log("Upperarm original x: "+this.upperArmLRoot.x)
+          console.log("Upperarm original x: "+this.upperArmLRoot.x)
 
-          // let change =   this.upperArmLRoot.x  - guiControls.translation.upperarm_L_x
-          // this.upperArmL.position.x = change
+          //setPosConverted()
+
           //
-          // this.upperArmL.position.y = guiControls.translation.upperarm_L_y - upperArmLRoot.y
-          // this.upperArmL.position.z = guiControls.translation.upperarm_L_z - upperArmLRoot.z
+          // //let change =   this.upperArmLRoot.x  - guiControls.translation.upperarm_L_x
+          // //this.upperArmL.position.x = change
           //
           // this.lowerArmL.position.x = guiControls.translation.lowerarm_L_x - this.lowerArmLRoot.x
           // this.lowerArmL.position.y = guiControls.translation.lowerarm_L_y - this.lowerArmLRoot.y
           // this.lowerArmL.position.z = guiControls.translation.lowerarm_L_z - this.lowerArmLRoot.z
-
-
-        //}
+          //
+          window.oldGUIX = guiControls.translation.upperarm_L_x;
+        }
     });
 	}
+
+  function setPosConverted(){
+    var pos = new THREE.Vector3(guiControls.translation.upperarm_L_x,
+                                guiControls.translation.upperarm_L_y,
+                                guiControls.translation.upperarm_L_z)
+
+    var local = window.upperArmL.worldToLocal(pos)
+    upperArmL.position.x = local.x;
+    upperArmL.position.y = local.y;
+    upperArmL.position.z = local.z;
+
+
+  }
+
+  function setPositionAbs(){
+    this.upperArmL.position.x = guiControls.translation.upperarm_L_x;
+    this.upperArmL.position.y = guiControls.translation.upperarm_L_y;
+    this.upperArmL.position.z = guiControls.translation.upperarm_L_z;
+  }
 
 	function animate(){
 		requestAnimationFrame(animate);
@@ -275,14 +386,12 @@ $(function(){
       positions = data;
       currentIndex = 0
       showPositionsAtIndex(currentIndex)
+      moveAvatarToCurrentPosition()
     });
   }
 
     init();
-    showMovements();
-
     animate();
-
 
 
 
