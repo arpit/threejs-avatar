@@ -39,8 +39,9 @@ function addMarker(color, x,y,z, parent){
 
 
 function setPosition(arm, pv){
+  clearMarkers()
   var avatar = scene.getObjectByName("avatar")
-  var g = avatar.localToWorld(new THREE.Vector3(pv.start.x, pv.start.y, pv.start.z))
+  var g = avatar.localToWorld(new THREE.Vector3(pv.end.x, pv.end.y, pv.end  .z))
   // //
   // // // var g = avatar.localToWorld(new THREE.Vector3(pv.end.x - pv.start.x,
   // // //                   pv.end.y - pv.start.y, pv.end.z-pv.start.y))
@@ -52,11 +53,16 @@ function setPosition(arm, pv){
   // // console.log(arm.parent)
   // // arm.matrixWorldNeedsUpdate = true
   //
-  arm.position.x = local.x
-   arm.position.y = local.y
-   arm.position.z = local.z
+  // arm.position.x = local.x
+  // arm.position.y = local.y
+  // arm.position.z = local.z
 
-  addMarkerAt("red",g, avatar)
+  arm.position.x = pv.start.x
+  arm.position.y = pv.start.y
+  arm.position.z = pv.start.z
+
+
+  addMarkerAt("green",g, avatar)
   // //
   // arm.matrixWorldNeedsUpdate = true
   //var local = pv.start;
@@ -74,19 +80,10 @@ function setPosition(arm, pv){
 
 
 function moveAvatarToCurrentPosition(){
-  // var p1 = setPosition(window.collarL, positions[positionIndex]["left_bone_0"])
-  // var p2 = setPosition(window.upperArmL, positions[positionIndex]["left_bone_1"])
-  // var p3 = setPosition(window.lowerArmL, positions[positionIndex]["left_bone_2"])
-
-  // window.collarL.position.x = p1.x
-  // window.collarL.position.x = p1.y
-  // window.collarL.position.x = p1.z
-
-
-
-  //window..position.x = -0.11766968108291041
-
-
+  var p1 = setPosition(window.collarL, positions[positionIndex]["left_bone_0"])
+  var p2 = setPosition(window.upperArmL, positions[positionIndex]["left_bone_1"])
+  var p3 = setPosition(window.lowerArmL, positions[positionIndex]["left_bone_2"])
+  var p4 = setPosition(window.handL, positions[positionIndex]["left_bone_3"])
 }
 
 function onNextClicked(){
@@ -171,6 +168,8 @@ $(function(){
 		camera =  new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, .1, 10);
 		renderer = new THREE.WebGLRenderer({antialias:true});
 
+    window.scene = scene
+
 		renderer.setClearColor(0x333300);
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.shadowMap.enabled= true;
@@ -189,6 +188,11 @@ $(function(){
     hemi = new THREE.HemisphereLight( 0xff0090, 0xff0011 );
     scene.add(hemi);
     scene.fog = new THREE.Fog( 0xffff90, .01, 500 );
+
+    var plane = new THREE.Mesh( new THREE.PlaneGeometry( .4, .4, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0x00ff00, opacity: 0.25 } ) );
+    plane.visible = true;
+    plane.rotateX(Math.PI/2)
+    this.scene.add( plane );
 
     datGUI = new dat.GUI();
 
@@ -209,7 +213,11 @@ $(function(){
     }
     loader = new THREE.ObjectLoader();
 
-    loader.load( './exports/avatar_flipped_chestbones.json', (obj)=>{
+    loader.load( './exports/avatar_split_bones.json', (obj)=>{
+
+
+
+
       obj.name = "avatar"
 
       var helper = new THREE.SkeletonHelper( obj );
@@ -244,6 +252,23 @@ $(function(){
   function markupAvatar(){
     scene.traverse(function(child){
       if (child instanceof THREE.SkinnedMesh){
+
+        // if(! window.fixed){
+        //   console.log("Fixing")
+        //
+        //   child.updateMatrix();
+        //   child.updateMatrixWorld(true);
+        //   let geo = child.geometry;
+        //   let verts = geo.vertices;
+        //   for (let i = 0; i < verts.length; i++)
+        //   {
+        //     verts[i].setX(verts[i].x * -1);
+        //     verts[i].setY(verts[i].y * -1);
+        //   }
+        //   geo.verticesNeedUpdate = true;
+        //
+        // }
+
           //child.rotation.y += .01;
           if(!window.upperArmL || !window.lowerArmL){
             for(var i=0; i < child.skeleton.bones.length; i++){
