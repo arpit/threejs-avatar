@@ -38,10 +38,10 @@ function addMarker(color, x,y,z, parent){
 }
 
 
-function setPosition(arm, pv){
+function setPosition(arm, pv, markerColor){
   clearMarkers()
   var avatar = scene.getObjectByName("avatar")
-  var g = avatar.localToWorld(new THREE.Vector3(pv.end.x, pv.end.y, pv.end  .z))
+  var g = avatar.localToWorld(new THREE.Vector3(pv.start.x, pv.start.y, pv.start.z))
   // //
   // // // var g = avatar.localToWorld(new THREE.Vector3(pv.end.x - pv.start.x,
   // // //                   pv.end.y - pv.start.y, pv.end.z-pv.start.y))
@@ -57,12 +57,9 @@ function setPosition(arm, pv){
   // arm.position.y = local.y
   // arm.position.z = local.z
 
-  arm.position.x = pv.start.x
-  arm.position.y = pv.start.y
-  arm.position.z = pv.start.z
+  setAbsPosition(arm, pv.start.x, pv.start.y,pv.start.z, markerColor)
 
 
-  addMarkerAt("green",g, avatar)
   // //
   // arm.matrixWorldNeedsUpdate = true
   //var local = pv.start;
@@ -78,12 +75,22 @@ function setPosition(arm, pv){
 
 }
 
+function setAbsPosition(arm, x,y,z, markerColor){
+  arm.position.x = x
+  arm.position.y = y
+  arm.position.z = z
+
+  if(markerColor){
+    addMarkerAt(markerColor,g, avatar)
+  }
+}
+
 
 function moveAvatarToCurrentPosition(){
   var p1 = setPosition(window.collarL, positions[positionIndex]["left_bone_0"])
   var p2 = setPosition(window.upperArmL, positions[positionIndex]["left_bone_1"])
   var p3 = setPosition(window.lowerArmL, positions[positionIndex]["left_bone_2"])
-  var p4 = setPosition(window.handL, positions[positionIndex]["left_bone_3"])
+  var p4 = setPosition(window.handL, positions[positionIndex]["left_bone_3"], "green")
 }
 
 function onNextClicked(){
@@ -214,16 +221,10 @@ $(function(){
     loader = new THREE.ObjectLoader();
 
     loader.load( './exports/avatar_split_bones.json', (obj)=>{
-
-
-
-
       obj.name = "avatar"
-
       var helper = new THREE.SkeletonHelper( obj );
       helper.material.linewidth = 3;
       scene.add( helper );
-
       scene.add(obj)
       setTimeout(markupAvatar, 2000)
     });
