@@ -81,7 +81,7 @@ function setAbsPosition(arm, x,y,z, markerColor){
   arm.position.z = z
 
   if(markerColor){
-    addMarkerAt(markerColor,g, avatar)
+    addMarkerAt(markerColor , new THREE.Vector3(x,y,z))
   }
 }
 
