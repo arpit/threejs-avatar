@@ -91,6 +91,11 @@ function moveAvatarToCurrentPosition(){
   var p2 = setPosition(window.upperArmL, positions[positionIndex]["left_bone_1"])
   var p3 = setPosition(window.lowerArmL, positions[positionIndex]["left_bone_2"])
   var p4 = setPosition(window.handL, positions[positionIndex]["left_bone_3"], "green")
+
+  var p1 = setPosition(window.collarR, positions[positionIndex]["right_bone_0"])
+  var p2 = setPosition(window.upperArmR, positions[positionIndex]["right_bone_1"])
+  var p3 = setPosition(window.lowerArmR, positions[positionIndex]["right_bone_2"])
+  var p4 = setPosition(window.handR, positions[positionIndex]["right_bone_3"], "green")
 }
 
 function onNextClicked(){
@@ -281,6 +286,11 @@ $(function(){
                 case("LowerArm.L"): window.lowerArmL = bone; break;
                 case("Collar.L"): window.collarL = bone; break;
                 case("Hand.L"): window.handL = bone; break;
+
+                case("UpperArm.R"): window.upperArmR = bone; break;
+                case("LowerArm.R"): window.lowerArmR = bone; break;
+                case("Collar.R"): window.collarR = bone; break;
+                case("Hand.R"): window.handR = bone; break;
               }
             }
             //now
@@ -408,7 +418,7 @@ $(function(){
 
 
   function showMovements(){
-    loadMovement(function(data){
+    loadMovement('../data/movement2.json',function(data){
       positions = data;
       currentIndex = 0
       showPositionsAtIndex(currentIndex)
